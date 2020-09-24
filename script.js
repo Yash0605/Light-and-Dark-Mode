@@ -1,3 +1,6 @@
+const DARK_THEME = 'dark';
+const LIGHT_THEME = 'light';
+
 const toggleButton = document.querySelector('input[type=checkbox]');
 const nav = document.getElementById('nav');
 const textBox = document.getElementById('text-box');
@@ -7,7 +10,14 @@ const image3 = document.getElementById('image3');
 const toggleIcon = document.getElementById('toggle-icon');
 const titleText = document.getElementById('title-text');
 
-function switchColor(mode) {
+// function setVariables(key, value) {
+//     key = 
+// }
+
+const rootElement = document.documentElement;
+
+function switchColor(isDark) {
+    const mode = isDark === DARK_THEME ? true : false;
     nav.style.backgroundColor = mode ? 'rgb(0 0 0 / 50%)' : 'rgb(255 255 255 / 50%)';
     textBox.style.backgroundColor = mode ? 'rgb(255 255 255 / 50%)' : 'rgb(0 0 0 / 50%)';
 
@@ -24,12 +34,26 @@ function switchColor(mode) {
 }
 
 toggleButton.addEventListener('change', (event) => {
-    console.log(event.target.checked);
-    const rootElement = document.documentElement;
     if(event.target.checked) {
-        rootElement.setAttribute('data-theme', 'dark')
+        rootElement.setAttribute('data-theme', DARK_THEME)
+        localStorage.setItem('theme', DARK_THEME)
     } else {
-        rootElement.setAttribute('data-theme', 'light')
+        rootElement.setAttribute('data-theme', LIGHT_THEME)
+        localStorage.setItem('theme', LIGHT_THEME)
     }
-    switchColor(event.target.checked);
-})
+    switchColor(event.target.checked ? DARK_THEME : LIGHT_THEME);
+});
+
+const currentMode = localStorage.getItem('theme');
+
+if(currentMode) {
+    let modeVal = currentMode === DARK_THEME ? true : false;
+    rootElement.setAttribute('data-theme', currentMode);
+    switchColor(modeVal);
+
+    if(modeVal) {
+        toggleButton.checked = true;
+    }
+} else {
+    rootElement.setAttribute('data-theme', LIGHT_THEME); // setting initial mode to light
+}
